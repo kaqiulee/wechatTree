@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jc.dao.TreeMapper">
+    <insert id="plantTree" parameterType="com.jc.model.TreeMod">
+        insert into tree(user_id,tree_name,life,longitude,latitude,time)
+        values (#{userId},#{name},#{life},#{longitude},#{latitude},now())
+
+    </insert>
+
+    <select id="getTree" parameterType="Integer" resultMap="getbyid">
+    select t.*,u.id as u_id , u.name ,u.password,u.age from tree t ,user u where t.user_id = u.id and t.id = #{id}
+    </select>
+
+    <resultMap id="getbyid" type="com.jc.entity.Tree">
+        <id property="id" column="id"></id>
+        <result property="name" column="tree_name"></result>
+        <result property="life" column="life"></result>
+        <result property="longitude" column="longitude"></result>
+        <result property="latitude" column="latitude"></result>
+        <association property="user" javaType="com.jc.entity.User">
+            <id property="id" column="u_id"></id>
+            <result property="name" column="name"></result>
+            <result property="password" column="password"></result>
+            <result property="age" column="age"></result>
+        </association>
+    </resultMap>
+
+
+    <select id="getDistantTrees" parameterType="Double" resultMap="treeInfo">
+SELECT t.*,u.id as u_id ,u.`name`,u.`password`,u.age FROM tree t , user u
+where t.user_id = u.id
+  and (longitude BETWEEN (#{long} - 0.01) and (#{long} + 0.01))
+  and (latitude BETWEEN (#{lat} - 0.01) and (#{lat} + 0.01))
+
+    </select>
+    <resultMap id="treeInfo" type="com.jc.entity.Tree">
+        <id property="id" column="id"></id>
+        <result property="name" column="tree_name"></result>
+        <result property="life" column="life"></result>
+        <result property="longitude" column="longitude"></result>
+        <result property="latitude" column="latitude"></result>
+        <association property="user" javaType="com.jc.entity.User">
+            <id property="id" column="u_id"></id>
+            <result property="name" column="name"></result>
+            <result property="password" column="password"></result>
+            <result property="age" column="age"></result>
+        </association>
+    </resultMap>
+
+
+    <select id="getTreeByUserId" parameterType="Integer" resultMap="ByUserId">
+        select t.*,u.id as u_id , u.name ,u.password,u.age from tree t ,user u where t.user_id = u.id and u.id = #{id}
+    </select>
+    <resultMap id="ByUserId" type="com.jc.entity.Tree">
+        <id property="id" column="id"></id>
+        <result property="name" column="tree_name"></result>
+        <result property="life" column="life"></result>
+        <result property="longitude" column="longitude"></result>
+        <result property="latitude" column="latitude"></result>
+        <result property="time" column="time"></result>
+        <association property="user" javaType="com.jc.entity.User">
+            <id property="id" column="u_id"></id>
+            <result property="name" column="name"></result>
+            <result property="password" column="password"></result>
+            <result property="age" column="age"></result>
+        </association>
+    </resultMap>
+
+
+    <select id="getTreeBySessionId" parameterType="String" resultMap="bysessionid">
+        select t.*,u.id as u_id , u.name ,u.password,u.age,u.date,u.open_id,u.session_id,u.session_key from tree t ,user u where t.user_id = u.id and u.session_id = #{sessionId}
+    </select>
+    <resultMap id="bysessionid" type="com.jc.entity.Tree">
+        <id property="id" column="id"></id>
+        <result property="name" column="tree_name"></result>
+        <result property="life" column="life"></result>
+        <result property="longitude" column="longitude"></result>
+        <result property="latitude" column="latitude"></result>
+        <result property="time" column="time"></result>
+        <association property="user" javaType="com.jc.entity.User">
+            <id property="id" column="u_id"></id>
+            <result column="name" property="name" />
+            <result column="password" property="password" />
+            <result column="age" property="age" />
+            <result column="date" property="date" />
+            <result column="open_id" property="openId" />
+            <result column="session_key" property="sessionKey" />
+            <result column="session_id" property="sessionId" />
+        </association>
+    </resultMap>
+    <update id="updateLife">
+        update tree set life = life+#{water} where id=#{treeId}
+    </update>
+
+
+
+
+
+
+
+</mapper>

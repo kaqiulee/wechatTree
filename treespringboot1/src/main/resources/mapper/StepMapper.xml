@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jc.treespringboot.dao.StepMapper">
+
+    <select id="getTodayStep" parameterType="Integer" resultMap="stepinfo">
+        select * from tree.step where user_id = #{userId} and date (now())=date
+    </select>
+    <resultMap id="stepinfo" type="com.jc.treespringboot.entity.Step">
+        <id property="id" column="id"></id>
+        <result property="userId" column="user_id"></result>
+        <result property="step" column="step"></result>
+        <result property="date" column="date"></result>
+    </resultMap>
+    <insert id="insertStep">
+        insert into tree.step (user_id , date , step) values (#{userId},date(now()),#{step})
+    </insert>
+    <update id="updateStep">
+        update tree.step set step=#{step} where user_id = #{userId} and date(now())=date
+    </update>
+    <select id="selectStep" parameterType="Integer" resultMap="stepinfo">
+        select * from tree.step where user_id = #{userId}
+    </select>
+
+
+
+
+
+
+</mapper>

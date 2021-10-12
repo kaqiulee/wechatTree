@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jc.dao.WaterMapper">
+
+    <resultMap id="waterInfo" type="com.jc.entity.Water">
+        <id column="id" property="id"></id>
+        <result property="userId" column="user_id"></result>
+        <result property="treeId" column="tree_id"></result>
+        <result property="time" column="time"></result>
+        <result property="water" column="water"></result>
+    </resultMap>
+
+    <select id="getWater" resultMap="waterInfo">
+        select * from tree.water where user_id = #{userId} and date(time) = date(#{date})
+    </select>
+
+    <insert id="insertWater" parameterType="com.jc.entity.Water">
+        insert into tree.water (user_id,tree_id,time,water)
+        values(#{userId},#{treeId},#{time},#{water})
+    </insert>
+
+</mapper>

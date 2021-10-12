@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jc.treespringboot.dao.TreeMapper">
+    <insert id="plantTree" parameterType="com.jc.treespringboot.model.TreeMod">
+        insert into tree.tree(user_id,tree_name,life,longitude,latitude,time) values (#{userId},#{name},#{life},#{longitude},#{latitude},now())
+
+    </insert>
+    <select id="getTree" parameterType="Integer" resultMap="getbyid">
+    select t.*,u.id as u_id , u.name ,u.password,u.age from tree.tree t ,tree.user u where t.user_id = u.id and t.id = #{id}
+    </select>
+    <resultMap id="getbyid" type="com.jc.treespringboot.entity.Tree">
+        <id property="id" column="id"></id>
+        <result property="name" column="tree_name"></result>
+        <result property="life" column="life"></result>
+        <result property="longitude" column="longitude"></result>
+        <result property="latitude" column="latitude"></result>
+        <association property="user" javaType="com.jc.treespringboot.entity.User">
+            <id property="id" column="u_id"></id>
+            <result property="name" column="name"></result>
+            <result property="password" column="password"></result>
+            <result property="age" column="age"></result>
+        </association>
+    </resultMap>
+    <select id="getDistanceTrees" resultMap="treeinfo">
+        SELECT t.*,u.id as u_id ,u.name,u.password,u.age FROM tree.tree t , tree.user u
+        where t.user_id = u.id
+          and (longitude BETWEEN (#{long} - 0.01) and (#{long} + 0.01))
+          and (latitude BETWEEN (#{lat} - 0.01) and (#{lat} + 0.01))
+    </select>
+        <resultMap id="treeinfo" type="com.jc.treespringboot.entity.Tree">
+            <id property="id" column="id"></id>
+            <result property="name" column="tree_name"></result>
+            <result property="life" column="life"></result>
+            <result property="longitude" column="longitude"></result>
+            <result property="latitude" column="latitude"></result>
+            <result property="time" column="time"></result>
+            <association property="user" javaType="com.jc.treespringboot.entity.User">
+                <id property="id" column="u_id"></id>
+                <result property="name" column="name"></result>
+                <result property="password" column="password"></result>
+                <result property="age" column="age"></result>
+            </association>
+        </resultMap>
+    <select id="getTreeByUserId" parameterType="Integer" resultMap="getbyuserid">
+        select t.*,u.id as u_id , u.name ,u.password,u.age from tree.tree t ,tree.user u where t.user_id = u.id and u.id = #{id}
+    </select>
+    <resultMap id="getbyuserid" type="com.jc.treespringboot.entity.Tree">
+        <id property="id" column="id"></id>
+        <result property="name" column="tree_name"></result>
+        <result property="life" column="life"></result>
+        <result property="longitude" column="longitude"></result>
+        <result property="latitude" column="latitude"></result>
+        <result property="time" column="time"></result>
+        <association property="user" javaType="com.jc.treespringboot.entity.User">
+            <id property="id" column="u_id"></id>
+            <result property="name" column="name"></result>
+            <result property="password" column="password"></result>
+            <result property="age" column="age"></result>
+        </association>
+    </resultMap>
+    <select id="getTreeBySessionId" parameterType="String" resultMap="getbysessionid">
+        select t.*,u.id as u_id , u.name ,u.password,u.age ,u.date ,u.session_id,u.session_key from tree.tree t ,tree.user u where t.user_id = u.id and u.session_id = #{sessionId}
+    </select>
+    <resultMap id="getbysessionid" type="com.jc.treespringboot.entity.Tree">
+        <id property="id" column="id"></id>
+        <result property="name" column="tree_name"></result>
+        <result property="life" column="life"></result>
+        <result property="longitude" column="longitude"></result>
+        <result property="latitude" column="latitude"></result>
+        <result property="time" column="time"></result>
+        <association property="user" javaType="com.jc.treespringboot.entity.User">
+            <id property="id" column="u_id"></id>
+            <result property="name" column="name"/>
+            <result property="password" column="password"/>
+            <result property="age" column="age"/>
+            <result property="date" column="date"/>
+            <result property="openId" column="open_id"/>
+            <result property="sessionId" column="session_id"/>
+            <result property="sessionKey" column="session_key"/>
+        </association>
+    </resultMap>
+
+    <update id="updateLife">
+        update tree.tree set life = life+#{water} where id=#{treeId}
+    </update>
+
+    <delete id="deleteTree">
+        delete from tree.tree where life>=5000
+    </delete>
+
+<insert id="updateTree">
+    insert into tree.uptree(tree_name,life) select tree_name,life from tree.tree where life>=5000
+</insert>
+
+    <select id="haveTree" parameterType="Integer" resultMap="havemytree">
+        select id, tree_name, life from tree.tree where life>=5000
+    </select>
+    <resultMap id="havemytree" type="com.jc.treespringboot.entity.Tree">
+        <id property="id" column="id"></id>
+        <result property="name" column="tree_name"></result>
+        <result property="life" column="life"></result>
+    </resultMap>
+
+</mapper>
